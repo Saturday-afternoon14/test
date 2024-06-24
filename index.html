@@ -1,0 +1,349 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <base th:href="${#request.getContextPath()}+'/'">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>数据同步实时监控</title>
+        <link rel="stylesheet" type="text/css" href="css/monitor.css" />
+    </head>
+
+<body>
+
+    <span id="bugBtn" title="同步过程出现错误数据，请检查" onclick="hideBugBtn('')"></span>
+    <span id="localtime" style=" font-size:14px; position: absolute; z-index: 10; right: 25px; top:5px; "></span>
+    <span class="btn btn-blue btn-big" id="refreshBtn" title="默认 1min 刷新一次">刷新</span>
+    <script>
+        // 页面加载时执行的函数，用于显示机器码
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从localStorage获取之前保存的机器码
+            var selectedMachineCode = localStorage.getItem('selectedMachineCode');
+
+            // 如果有保存的机器码，则显示出来
+            if (selectedMachineCode) {
+                // 找到要显示机器码的元素并设置其内容
+                var machineCodeDisplay = document.querySelector('.t_mbox2 span:last-child'); // 假设这是你要显示机器码的地方
+                if (machineCodeDisplay) {
+                    machineCodeDisplay.textContent = selectedMachineCode;
+                }
+            }
+        });
+    </script>
+    <div style="height: 620px;">
+        <header class="t_header">
+            <span>数据同步实时监控</span>
+        </header>
+        <div style="margin-top: 20px;">
+            <div class="t_left_box">
+
+            </div>
+
+            <div class="t_top2_box">
+                <img class="t_l_line" src="images/left_line.png" alt="">
+                <div class="t_mbox2">
+                    <span style="color: #00b3ac; float: left; margin-left: 5%;">已运行：</span>
+                    <span id="runTimeTj" style="float: left; margin-left: 3%;"></span>
+                    <span style="color: #00b3ac; float: left; margin-left: 15%;">机器码：</span>
+                    <span style="color: #00b3ac; float: left; margin-left: 3%;">ID</span>
+                </div>
+                <img class="t_r_line" src="images/right_line.png" alt="">
+            </div>
+            <div class="t_bottom_box" style="display: flex;">
+                <div class="chart" id="taskSize2" style="flex: 1; height: 500px;"></div>
+                <div class="chart" id="taskSize1" style="flex: 1; height: 500px;"></div>
+
+            </div>
+
+            <div class="t_bottom_box1">
+
+                <label for="startYear">起始年份:</label>
+                <select id="startYear" name="startYear">
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+
+                <label for="startMonth">起始月份:</label>
+                <select id="startMonth" name="startMonth">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                <label for="startDay">起始日期:</label>
+                <select id="startDay" name="startDay">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                </select>
+
+                <label for="startHour">起始小时:</label>
+                <select id="startHour" name="startHour">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                </select>
+                <br><br>
+                <label for="endYear">结束年份:</label>
+                <select id="endYear" name="endYear">
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+
+                <label for="endMonth">结束月份:</label>
+                <select id="endMonth" name="endMonth">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                <label for="endDay">结束日期:</label>
+                <select id="endDay" name="endDay">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                </select>
+
+                <label for="endHour">结束小时:</label>
+                <select id="endHour" name="endHour">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                </select>
+                <br><br>
+                <button id="queryButton">确认查询</button>
+                <div class="chart-container" id="chartContainer">
+                    <div class="chart" id="taskSize3" style="width: 100%; height:300px;"></div>
+                </div>
+                <select id="languageSelect" onchange="setLanguage()">
+                    <option value="en">English</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button id="exportButton">导出报表</button>
+
+                <div id="dataContainer">
+                    <!-- 数据将会显示在这里 -->
+                </div>
+
+        </div>
+    </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/echarts-all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="js/monitor.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        // 将数据转换为工作表格式
+        function createSheet(data) {
+            var ws = XLSX.utils.aoa_to_sheet(data);
+            return ws;
+        }
+
+        // 导出为Excel文件
+        function exportToExcel(filename, sheet) {
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, sheet, "报表");
+
+            XLSX.writeFile(wb, filename);
+        }
+
+        // 将数据转换为二维数组
+        function getDataForExcel() {
+            var rows = [];
+            // 添加标题行
+            rows.push(["时间", "数据量", "标签"]);
+            for (var i = 0; i < names.length; i++) {
+                rows.push([names[i], values[i], tags[i]]);
+            }
+            for (var i = 0; i < names2.length; i++) {
+                rows.push([names2[i], data2[i], tags2[i]]);
+            }
+            return rows;
+        }
+
+        // 绑定导出按钮的点击事件
+        document.getElementById('exportButton').addEventListener('click', function () {
+            var data = getDataForExcel();
+            var sheet = createSheet(data);
+            exportToExcel('report.xlsx', sheet);
+        });
+    </script>
+
+    <script>
+        var translations = {
+            en: {
+                "dataSync": "Data Sync Real-time Monitoring",
+                "dataSyncHeader": "Data Sync Real-time Monitoring",
+                "todaySyncedLabel": "Today Synced",
+                "toBeSyncedLabel": "To Be Synced",
+                "syncDelayLabel": "Sync Delay (s)",
+                "statusLabel": "Status",
+                "addLabel": "Add",
+                "updateLabel": "Update",
+                "deleteLabel": "Delete",
+                "runTimeLabel": "Run Time",
+                "queryButton": "Query",
+                "exportButton": "Export Report"
+            },
+            zh: {
+                "dataSync": "数据同步实时监控",
+                "dataSyncHeader": "数据同步实时监控",
+                "todaySyncedLabel": "今日已同步",
+                "toBeSyncedLabel": "待同步",
+                "syncDelayLabel": "同步延时(秒)",
+                "statusLabel": "状态",
+                "addLabel": "新增",
+                "updateLabel": "修改",
+                "deleteLabel": "删除",
+                "runTimeLabel": "已运行",
+                "queryButton": "确认查询",
+                "exportButton": "导出报表"
+            }
+        };
+
+        function setLanguage() {
+            var selectedLanguage = document.getElementById("languageSelect").value;
+            document.getElementById("dataSync").innerText = translations[selectedLanguage]["dataSync"];
+            document.getElementById("dataSyncHeader").innerText = translations[selectedLanguage]["dataSyncHeader"];
+            document.getElementById("todaySyncedLabel").innerText = translations[selectedLanguage]["todaySyncedLabel"];
+            document.getElementById("toBeSyncedLabel").innerText = translations[selectedLanguage]["toBeSyncedLabel"];
+            document.getElementById("syncDelayLabel").innerText = translations[selectedLanguage]["syncDelayLabel"];
+            document.getElementById("statusLabel").innerText = translations[selectedLanguage]["statusLabel"];
+            document.getElementById("addLabel").innerText = translations[selectedLanguage]["addLabel"];
+            document.getElementById("updateLabel").innerText = translations[selectedLanguage]["updateLabel"];
+            document.getElementById("deleteLabel").innerText = translations[selectedLanguage]["deleteLabel"];
+            document.getElementById("runTimeLabel").innerText = translations[selectedLanguage]["runTimeLabel"];
+            document.getElementById("queryButton").innerText = translations[selectedLanguage]["queryButton"];
+            document.getElementById("exportButton").innerText = translations[selectedLanguage]["exportButton"];
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            setLanguage();  // Initialize with default language
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

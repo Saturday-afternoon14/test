@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+    <!-- 确保按钮样式美观，可自定义或使用Bootstrap等框架 -->
+    <style>
+        body {
+            text-align: center;
+            padding-top: 50px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        button, select {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>基于振动，音频的设备状态检测系统</h1>
+<div class="container">
+    <label for="startMonth">机器码:</label>
+    <select id="startMonth" name="startMonth">
+        <option value="001">001</option>
+        <option value="002">002</option>
+    </select>
+    <!-- 按钮点击后跳转到index.html -->
+    <button onclick="goToIndex()">跳转</button>
+</div>
+<script>
+    function goToIndex() {
+        // 存储选择的机器码到localStorage
+        localStorage.setItem('selectedMachineCode', document.getElementById('startMonth').value);
+
+        // 跳转操作
+        window.location.href = 'index.html';
+    }
+</script>
+</body>
+</html>
